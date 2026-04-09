@@ -4,9 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Dashboard</title>
+    <script>
+      (function () {
+        try {
+          var theme = JSON.parse(localStorage.getItem('dashboard_theme'));
+          if (theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <button id="theme-toggle" class="btn theme-toggle" type="button" aria-label="Toggle colour theme"></button>
     <main class="dashboard">
 
       <!-- Greeting Widget -->
@@ -14,12 +25,26 @@
         <p id="greeting-message" class="greeting__message"></p>
         <p id="greeting-time" class="greeting__time"></p>
         <p id="greeting-date" class="greeting__date"></p>
+        <form id="name-form" class="greeting__form" novalidate>
+          <input
+            id="name-input"
+            class="input"
+            type="text"
+            placeholder="Enter your name…"
+            aria-label="Your name"
+          />
+          <button class="btn" type="submit">Save</button>
+        </form>
       </section>
 
       <!-- Focus Timer Widget -->
       <section id="focus-timer" class="widget widget--timer" aria-label="Focus Timer">
         <h2 class="widget__title">Focus Timer</h2>
         <p id="timer-display" class="timer__display">25:00</p>
+        <div class="timer__duration">
+          <input id="duration-input" class="input" type="number" min="1" max="60" aria-label="Timer duration in minutes" />
+          <button id="duration-set" class="btn" type="button">Set</button>
+        </div>
         <div class="timer__controls">
           <button id="timer-start" class="btn" type="button">Start</button>
           <button id="timer-stop" class="btn" type="button" disabled>Stop</button>

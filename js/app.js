@@ -23,6 +23,34 @@ const StorageService = {
 };
 
 // ============================================================
+// ThemeService — light/dark theme management
+// ============================================================
+const ThemeService = {
+  STORAGE_KEY: 'dashboard_theme',
+  DEFAULT: 'dark',
+
+  apply() {
+    const stored = StorageService.get(this.STORAGE_KEY);
+    const theme = stored === 'light' ? 'light' : this.DEFAULT;
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  },
+
+  toggle() {
+    const next = this.current() === 'light' ? 'dark' : 'light';
+    StorageService.set(this.STORAGE_KEY, next);
+    this.apply();
+  },
+
+  current() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  },
+};
+
+// ============================================================
 // GreetingWidget — time / date / greeting display
 // ============================================================
 const GREETINGS = [
@@ -41,14 +69,47 @@ const GreetingWidget = {
   _elMessage: null,
   _elTime: null,
   _elDate: null,
+  _elNameInput: null,
+  _name: '',
 
   init() {
-    this._elMessage = document.getElementById('greeting-message');
-    this._elTime    = document.getElementById('greeting-time');
-    this._elDate    = document.getElementById('greeting-date');
+    this._elMessage   = document.getElementById('greeting-message');
+    this._elTime      = document.getElementById('greeting-time');
+    this._elDate      = document.getElementById('greeting-date');
+    this._elNameInput = document.getElementById('name-input');
+
+    const stored = StorageService.get('dashboard_username');
+    if (stored && typeof stored === 'string') {
+      this._name = stored;
+    }
+
+    if (this._elNameInput) {
+      this._elNameInput.value = this._name;
+    }
+
+    const nameForm = document.getElementById('name-form');
+    if (nameForm) {
+      nameForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this._saveName(this._elNameInput.value);
+      });
+    }
 
     this._tick();
     setInterval(() => this._tick(), 1000);
+  },
+
+  _buildGreeting(hour) {
+    const base = getGreeting(hour);
+    return this._name ? `${base}, ${this._name}` : base;
+  },
+
+  _saveName(value) {
+    const trimmed = value.trim();
+    if (!trimmed) return;
+    StorageService.set('dashboard_username', trimmed);
+    this._name = trimmed;
+    this._tick();
   },
 
   _tick() {
@@ -66,7 +127,7 @@ const GreetingWidget = {
       year:    'numeric',
     });
 
-    this._elMessage.textContent = getGreeting(hour);
+    this._elMessage.textContent = this._buildGreeting(hour);
     this._elTime.textContent    = `${hh}:${mm}`;
     this._elDate.textContent    = dateStr;
   },
@@ -76,7 +137,7 @@ const GreetingWidget = {
 // FocusTimerWidget — 25-minute countdown timer
 // ============================================================
 const FocusTimerWidget = {
-  state: { remaining: 1500, running: false },
+  state: { remaining: 1500, running: false, duration: 25 },
 
   formatTime(seconds) {
     const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -86,19 +147,36 @@ const FocusTimerWidget = {
 
   _intervalId: null,
   _elDisplay: null,
+  _elDurationInput: null,
   _btnStart: null,
   _btnStop: null,
   _btnReset: null,
 
   init() {
-    this._elDisplay = document.getElementById('timer-display');
-    this._btnStart  = document.getElementById('timer-start');
-    this._btnStop   = document.getElementById('timer-stop');
-    this._btnReset  = document.getElementById('timer-reset');
+    this._elDisplay       = document.getElementById('timer-display');
+    this._elDurationInput = document.getElementById('duration-input');
+    this._btnStart        = document.getElementById('timer-start');
+    this._btnStop         = document.getElementById('timer-stop');
+    this._btnReset        = document.getElementById('timer-reset');
 
     this._btnStart.addEventListener('click', () => this._start());
     this._btnStop.addEventListener('click',  () => this._stop());
     this._btnReset.addEventListener('click', () => this._reset());
+
+    const durationSetBtn = document.getElementById('duration-set');
+    if (durationSetBtn) {
+      durationSetBtn.addEventListener('click', () => this._setDuration(this._elDurationInput.value));
+    }
+
+    const storedDuration = StorageService.get('dashboard_timer_duration');
+    if (typeof storedDuration === 'number' && storedDuration >= 1 && storedDuration <= 60 && Number.isInteger(storedDuration)) {
+      this.state.duration = storedDuration;
+    }
+    this.state.remaining = this.state.duration * 60;
+
+    if (this._elDurationInput) {
+      this._elDurationInput.value = this.state.duration;
+    }
 
     this._render();
   },
@@ -107,11 +185,21 @@ const FocusTimerWidget = {
     this._elDisplay.textContent = this.formatTime(this.state.remaining);
   },
 
+  _setDuration(value) {
+    const d = parseInt(value, 10);
+    if (isNaN(d) || d < 1 || d > 60 || String(value).includes('.')) return;
+    this.state.duration  = d;
+    this.state.remaining = d * 60;
+    StorageService.set('dashboard_timer_duration', d);
+    this._render();
+  },
+
   _start() {
     if (this.state.running) return;
     this.state.running = true;
     this._btnStart.disabled = true;
     this._btnStop.disabled  = false;
+    if (this._elDurationInput) this._elDurationInput.disabled = true;
 
     this._intervalId = setInterval(() => this._tick(), 1000);
   },
@@ -122,15 +210,17 @@ const FocusTimerWidget = {
     this.state.running = false;
     this._btnStart.disabled = false;
     this._btnStop.disabled  = true;
+    if (this._elDurationInput) this._elDurationInput.disabled = false;
   },
 
   _reset() {
     clearInterval(this._intervalId);
     this._intervalId = null;
     this.state.running   = false;
-    this.state.remaining = 1500;
+    this.state.remaining = this.state.duration * 60;
     this._btnStart.disabled = false;
     this._btnStop.disabled  = true;
+    if (this._elDurationInput) this._elDurationInput.disabled = false;
     this._render();
   },
 
@@ -144,6 +234,7 @@ const FocusTimerWidget = {
       this.state.running = false;
       this._btnStart.disabled = false;
       this._btnStop.disabled  = true;
+      if (this._elDurationInput) this._elDurationInput.disabled = false;
     }
   },
 };
@@ -382,7 +473,20 @@ const QuickLinksWidget = {
 // ============================================================
 // Bootstrap
 // ============================================================
+function updateToggleLabel(btn) {
+  btn.textContent = ThemeService.current() === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  ThemeService.apply();
+
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  updateToggleLabel(themeToggleBtn);
+  themeToggleBtn.addEventListener('click', () => {
+    ThemeService.toggle();
+    updateToggleLabel(themeToggleBtn);
+  });
+
   GreetingWidget.init();
   FocusTimerWidget.init();
   TodoWidget.init();
