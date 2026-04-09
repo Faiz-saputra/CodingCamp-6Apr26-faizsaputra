@@ -294,14 +294,6 @@ const TodoWidget = {
       e.preventDefault();
       this.addTask(this._elInput.value);
     });
-
-    // Explicit Enter-key listener (Requirement 3.2)
-    this._elInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        this.addTask(this._elInput.value);
-      }
-    });
   },
 };
 
@@ -384,19 +376,6 @@ const QuickLinksWidget = {
       this._elUrlInput.value   = '';
       this._elLabelInput.focus();
     });
-
-    // Explicit Enter-key listeners on both inputs (Requirement 3.2)
-    const submitLink = e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        this.addLink(this._elLabelInput.value, this._elUrlInput.value);
-        this._elLabelInput.value = '';
-        this._elUrlInput.value   = '';
-        this._elLabelInput.focus();
-      }
-    };
-    this._elLabelInput.addEventListener('keydown', submitLink);
-    this._elUrlInput.addEventListener('keydown', submitLink);
   },
 };
 

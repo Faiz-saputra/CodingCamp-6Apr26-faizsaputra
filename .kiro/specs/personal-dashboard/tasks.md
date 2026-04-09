@@ -138,7 +138,7 @@ Build a single-page personal dashboard as three files: `index.html`, `css/style.
     - Attach `keydown` listeners for Enter on the task input and the link label/URL inputs
     - _Requirements: 3.2_
 
-- [ ] 11. Final checkpoint — ensure all tests pass
+- [x] 11. Final checkpoint — ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
