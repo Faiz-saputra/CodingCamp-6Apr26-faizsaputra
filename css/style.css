@@ -1,0 +1,309 @@
+/* ============================================================
+   CSS Reset
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+}
+
+input {
+  font: inherit;
+}
+
+/* ============================================================
+   CSS Custom Properties (design tokens)
+   ============================================================ */
+:root {
+  /* Colours */
+  --color-bg:          #0f172a;
+  --color-surface:     #1e293b;
+  --color-border:      #334155;
+  --color-text:        #f1f5f9;
+  --color-text-muted:  #94a3b8;
+  --color-accent:      #6366f1;
+  --color-accent-hover:#4f46e5;
+  --color-danger:      #ef4444;
+  --color-success:     #22c55e;
+
+  /* Spacing */
+  --space-xs:  0.25rem;
+  --space-sm:  0.5rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Typography */
+  --font-family: system-ui, -apple-system, sans-serif;
+  --font-size-sm:   0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg:   1.25rem;
+  --font-size-xl:   1.5rem;
+  --font-size-2xl:  2rem;
+  --font-size-3xl:  3rem;
+
+  /* Borders */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: var(--space-lg);
+}
+
+/* ============================================================
+   Dashboard grid
+   ============================================================ */
+.dashboard {
+  display: grid;
+  gap: var(--space-lg);
+  max-width: 1200px;
+  margin: 0 auto;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================================
+   Widget base
+   ============================================================ */
+.widget {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+}
+
+.widget__title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+  color: var(--color-text);
+}
+
+/* ============================================================
+   Shared form elements
+   ============================================================ */
+.btn {
+  background-color: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  transition: background-color 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.input {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  width: 100%;
+}
+
+.input:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   To-Do Widget
+   ============================================================ */
+.todo__form {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.todo__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.todo__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.todo__description {
+  flex: 1;
+  font-size: var(--font-size-sm);
+}
+
+.todo__description--done {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.todo__toggle {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: var(--space-xs) var(--space-sm);
+  min-width: 2rem;
+}
+
+.todo__delete {
+  background-color: var(--color-danger);
+}
+
+.todo__delete:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+.todo__edit-input {
+  flex: 1;
+}
+
+/* ============================================================
+   Greeting Widget
+   ============================================================ */
+.widget--greeting {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+.greeting__message {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.greeting__time {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+}
+
+.greeting__date {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   Focus Timer Widget
+   ============================================================ */
+.timer__display {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: var(--space-md);
+  font-variant-numeric: tabular-nums;
+}
+
+.timer__controls {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+/* ============================================================
+   Quick Links Widget
+   ============================================================ */
+.links__form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  align-items: center;
+}
+
+.links__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.links__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.links__link {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+.links__delete {
+  background-color: var(--color-danger);
+  flex-shrink: 0;
+}
+
+.links__delete:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+/* ============================================================
+   Responsive — single-column stacked layout (< 768 px)
+   ============================================================ */
+@media (max-width: 767px) {
+  body {
+    padding: var(--space-md);
+  }
+
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .links__form {
+    grid-template-columns: 1fr;
+  }
+
+  .timer__controls {
+    flex-wrap: wrap;
+  }
+
+  .todo__form {
+    flex-wrap: wrap;
+  }
+
+  .todo__form .input {
+    flex: 1 1 100%;
+  }
+}

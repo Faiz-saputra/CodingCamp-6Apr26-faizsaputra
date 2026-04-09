@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Dashboard</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <main class="dashboard">
+
+      <!-- Greeting Widget -->
+      <section id="greeting" class="widget widget--greeting" aria-label="Greeting">
+        <p id="greeting-message" class="greeting__message"></p>
+        <p id="greeting-time" class="greeting__time"></p>
+        <p id="greeting-date" class="greeting__date"></p>
+      </section>
+
+      <!-- Focus Timer Widget -->
+      <section id="focus-timer" class="widget widget--timer" aria-label="Focus Timer">
+        <h2 class="widget__title">Focus Timer</h2>
+        <p id="timer-display" class="timer__display">25:00</p>
+        <div class="timer__controls">
+          <button id="timer-start" class="btn" type="button">Start</button>
+          <button id="timer-stop" class="btn" type="button" disabled>Stop</button>
+          <button id="timer-reset" class="btn" type="button">Reset</button>
+        </div>
+      </section>
+
+      <!-- To-Do List Widget -->
+      <section id="todo" class="widget widget--todo" aria-label="To-Do List">
+        <h2 class="widget__title">To-Do-List</h2>
+        <form id="todo-form" class="todo__form" novalidate>
+          <input
+            id="todo-input"
+            class="input"
+            type="text"
+            placeholder="Add a task…"
+            aria-label="New task description"
+          />
+          <button class="btn" type="submit">Add</button>
+        </form>
+        <ul id="todo-list" class="todo__list" aria-label="Task list"></ul>
+      </section>
+
+      <!-- Quick Links Widget -->
+      <section id="quick-links" class="widget widget--links" aria-label="Quick Links">
+        <h2 class="widget__title">Quick Links</h2>
+        <form id="links-form" class="links__form" novalidate>
+          <input
+            id="links-label-input"
+            class="input"
+            type="text"
+            placeholder="Label"
+            aria-label="Link label"
+          />
+          <input
+            id="links-url-input"
+            class="input"
+            type="url"
+            placeholder="https://…"
+            aria-label="Link URL"
+          />
+          <button class="btn" type="submit">Add</button>
+        </form>
+        <div id="links-list" class="links__list" aria-label="Quick links"></div>
+      </section>
+
+    </main>
+    <script src="js/app.js"></script>
+  </body>
+</html>
